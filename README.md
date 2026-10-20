@@ -72,3 +72,28 @@ The tests use an in-memory database and a shortened processing delay. They cover
 - **Recovery:** a lease lets jobs become claimable again if a worker disappears. Processing errors release a job for retry.
 
 This is a compact assessment implementation. In a production deployment with multiple replicas, use managed PostgreSQL and a shared durable queue (such as a cloud queue or Redis with BullMQ). Do not run multiple replicas with separate local SQLite files. For external payment side effects, use the provider's idempotency mechanism too.
+
+
+## Testing after deployment
+- Accepting transaction webhooks
+```
+curl --location 'http://16.178.134.151/v1/webhooks/transactions' \
+--header 'Content-Type: application/json' \
+--data '{
+    "transaction_id": "txn_123",
+    "source_account": "acc_user_2",
+    "destination_account": "acc_merchant_2",
+    "amount": 1700,
+    "currency": "INR"
+  }'
+```
+
+- Health check endpoint
+```
+http://16.178.134.151/
+```
+
+- Retrieve transaction status
+```
+curl --location 'http://16.178.134.151/v1/transactions/txn_123'
+```
